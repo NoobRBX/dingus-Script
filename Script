@@ -1,12 +1,12 @@
 
-local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
+    local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
 local Wait = library.subs.Wait 
 
 _G.esp = true
 _G.removeblind = true
 _G.hidderTasks = true
 local MainWindow = library:CreateWindow({
-    Name = " dingus | [ Version : 1.8 ]",
+    Name = " dingus | [ Version : 1.9 ]",
     Themeable = {
     Info = "Script Made By Noob"
     }
@@ -24,12 +24,12 @@ local Esp = GeneralTab:CreateSection({
 Esp:AddToggle({
     Name = "See Hidder",
     Flag = "As The Hunter This Useful",
-    Callback = function(v)
+    Callback = function(value)
     local Players = game:GetService("Players"):GetChildren()
     local RunService = game:GetService("RunService")
     local highlight = Instance.new("Highlight")
     highlight.Name = "Highlight"
-    _G.esp = v
+    _G.esp = value
     if _G.esp == false then 
         for i, v in pairs(Players) do
             repeat wait() until v.Character
@@ -38,6 +38,59 @@ Esp:AddToggle({
             end
         end
     else
+        while _G.esp == true do
+            wait()
+            for i, v in pairs(Players) do
+                repeat wait() until v.Character
+                if not v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+                    local highlightClone = highlight:Clone()
+                    highlightClone.Adornee = v.Character
+                    highlightClone.Parent = v.Character:FindFirstChild("HumanoidRootPart")
+                    highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                    highlightClone.Name = "Highlight"
+                end
+            end
+        
+            game.Players.PlayerAdded:Connect(function(player)
+                repeat wait() until player.Character
+                if not player.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+                    local highlightClone = highlight:Clone()
+                    highlightClone.Adornee = player.Character
+                    highlightClone.Parent = player.Character:FindFirstChild("HumanoidRootPart")
+                    highlightClone.Name = "Highlight"
+                end
+            end)
+        
+            game.Players.PlayerRemoving:Connect(function(playerRemoved)
+                playerRemoved.Character:FindFirstChild("HumanoidRootPart").Highlight:Destroy()
+            end)
+        
+            RunService.Heartbeat:Connect(function()
+                for i, v in pairs(Players) do
+                    repeat wait() until v.Character
+                    if not v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+                        local highlightClone = highlight:Clone()
+                        highlightClone.Adornee = v.Character
+                        highlightClone.Parent = v.Character:FindFirstChild("HumanoidRootPart")
+                        highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                        highlightClone.Name = "Highlight"
+                        task.wait()
+                    end
+            end
+        end)
+    end
+    
+        end
+        
+
+    
+
+    end
+})
+
+Esp:AddButton({
+    Name = "Fix Esp",
+    Callback = function()
         while true do
             wait()
             for i, v in pairs(Players) do
@@ -97,10 +150,12 @@ Esp:AddToggle({
             while _G.removeblind == true do
                 wait()
                 game:GetService("Players").LocalPlayer.PlayerGui.BlindnessGui.Frame.BackgroundTransparency = 1
+                warn("Blindness Gui has been removed ,Clear View For Hunter")
             end
 
     end
 })
+
 ----------- [ Hidder ] -----------
 local Hidder = GeneralTab:CreateSection({
     Name = " Hidder "
