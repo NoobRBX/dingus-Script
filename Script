@@ -1,12 +1,12 @@
 
-    local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
+local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
 local Wait = library.subs.Wait 
 
 _G.esp = true
 _G.removeblind = true
 _G.hidderTasks = true
 local MainWindow = library:CreateWindow({
-    Name = " dingus | Version : { 1.7 }V",
+    Name = " dingus | [ Version : 1.8 ]",
     Themeable = {
     Info = "Script Made By Noob"
     }
@@ -135,7 +135,7 @@ local TeleSec = GeneralTab:CreateSection({
     Side = "Right"
 })
 TeleSec:AddButton({
-    Name = " Rock:|Wave at tha gooberro|Task",
+    Name = "Rock:|Wave at tha gooberro|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(207.75, 19.499, 202.5)
@@ -143,7 +143,7 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Rock:|Celebratory! yippeee|Task",
+    Name = "Rock:|Celebratory! yippeee|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(196.923, 21.501, 254.493)
@@ -151,7 +151,7 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = " Beach:|Do some stuff at the alcove|Task",
+    Name = "Beach:|Do some stuff at the alcove|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(217.75, 8.501, 246.5)
@@ -159,7 +159,7 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Beach:|Relaxin' (the other one)|Task",
+    Name = "Beach:|Relaxin' (the other one)|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(242.75, 8.751, 241)
@@ -167,7 +167,7 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = " Beach:|Haii!! hello!!|Task",
+    Name = "Beach:|Haii!! hello!!|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(276.95, 8.501, 240)
@@ -175,14 +175,14 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Beach:|Laugh at this goober|Task",
+    Name = "Beach:|Laugh at this goober|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(298.45, 8.501, 251.9)
     end
 })
 TeleSec:AddButton({
-    Name = "  Beach:|Relaxin'|Task",
+    Name = "Beach:|Relaxin'|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(324.25, 8.75, 248.5)
@@ -190,7 +190,7 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Beach:|Wave on the dock|Task",
+    Name = "Beach:|Wave on the dock|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(319.823, 10.276, 191.677)
@@ -198,7 +198,7 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = " Street:|Dancin!!!!|Task",
+    Name = "Street:|Dancin!!!!|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(207.75, 19.499, 202.5)
@@ -206,7 +206,7 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Street:|Something idk|Task",
+    Name = "Street:|Something idk|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(341.554, 12.501, 283.933)
@@ -214,7 +214,7 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Garden:|Skrunkly|Task",
+    Name = "Garden:|Skrunkly|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(331.148, 12.251, 337.631)
@@ -222,14 +222,14 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Garden:|Goobly|Task",
+    Name = "Garden:|Goobly|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(306.038, 12.251, 364.407)
     end
 })
 TeleSec:AddButton({
-    Name = "  Outside Store",
+    Name = "Outside Store",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(246.06, 13, 323.86)
@@ -237,14 +237,14 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Store:|Browse the shelves|Task",
+    Name = "Store:|Browse the shelves|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(235, 12.501, 342.25)
     end
 })
 TeleSec:AddButton({
-    Name = "  Store:|Look into a fridge|Task",
+    Name = "Store:|Look into a fridge|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(237, 12.501, 365.75)
@@ -252,14 +252,14 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Store:|idk scream at the cashier|Task",
+    Name = "Store:|idk scream at the cashier|Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(203.75, 12.501, 335.75)
     end
 })
 TeleSec:AddButton({
-    Name = "  Street:|Destroy the street light|Red Task",
+    Name = "Street:|Destroy the street light|Red Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(244.75, 12.5, 273.5)
@@ -267,14 +267,14 @@ TeleSec:AddButton({
 })
 
 TeleSec:AddButton({
-    Name = "  Garden:|Hack the billboard|Red Task",
+    Name = "Garden:|Hack the billboard|Red Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(330.75, 12.25, 363.5)
     end
 })
 TeleSec:AddButton({
-    Name = "  Store:|Break the vending machine|Red Task",
+    Name = "Store:|Break the vending machine|Red Task",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(246.75, 12.501, 347.75)
@@ -285,7 +285,7 @@ local TeleMicsSec = GeneralTab:CreateSection({
     Name = "Mics Teleport"
 })
 TeleMicsSec:AddButton({
-    Name = "  Hidden Place",
+    Name = "Hidden Place",
     Callback = function()
     
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(237.336, 5.264, 366.773)
