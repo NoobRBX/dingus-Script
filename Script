@@ -22,7 +22,7 @@ local Esp = GeneralTab:CreateSection({
     Name = " Hunter "
 })
 Esp:AddToggle({
-    Name = "See Hidder",
+    Name = "See Hider",
     Flag = "As The Hunter This Useful",
     Callback = function(value)
     local Players = game:GetService("Players"):GetChildren()
