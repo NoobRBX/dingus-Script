@@ -429,7 +429,7 @@ TeleMicsSec:AddButton({
 })
 
 
-local MiscSec = Misc:CreateSection({
+local MiscSec = Mics:CreateSection({
 	Name = " Misc "
 })
 
