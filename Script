@@ -1,12 +1,87 @@
 
-    local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
+local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
 local Wait = library.subs.Wait 
-
+--------- [ Bloodlen ] -----------
 _G.esp = true
 _G.removeblind = true
 _G.hidderTasks = true
+_G.autotask = true
+--------- [ Function ] -----------
+local plrtaskCheck = game:GetService("Players").LocalPlayer.PlayerGui.TaskUI.Body
+function CheckTask()
+	local PlrTask = game:GetService("Players").LocalPlayer.PlayerGui.TaskUI.Body:GetChildren()
+
+	for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.TaskUI.Body:GetChildren())  do
+		if v:IsA("Frame") then
+			if v.Name == "Garden" or v.Name == "Store" or v.Name == "Street" or v.Name == "Beach" then
+				if v.Name == "Garden" then
+					if v.Garden.TaskText == "Garden | Skrunkly" then
+						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(331.148, 12.251, 337.631)
+                        task.wait(7)
+					end
+
+                elseif v.Name == "Garden" then
+                    if v.Garden.TaskText == "Garden | Goobly" then
+						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(306.038, 12.251, 364.407)
+                        task.wait(7)
+					end
+
+                elseif v.Name == "Rock" then
+                    if v.Garden.TaskText == "Rock | Wave at tha gooberro" then
+						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(306.038, 12.251, 364.407)
+                        task.wait(7)
+					end
+
+                elseif v.Name == "Rock" then
+                    if v.Garden.TaskText == "Rock | Celebratory! yippeee" then
+						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(196.923, 21.501, 254.493)
+                        task.wait(7)
+					end
+
+                elseif v.Name == "Beach" then
+                    if v.Garden.TaskText == "Beach | Do some stuff at the alcove" then
+                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(217.75, 8.501, 246.5)
+                        task.wait(7)
+					end
+
+                elseif v.Name == "Beach" then
+                    if v.Garden.TaskText == "Beach | Relaxin' (the other one)" then
+                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(242.75, 8.751, 241)	
+                    task.wait(7)				
+                end
+
+                elseif v.Name == "Beach" then
+                    if v.Garden.TaskText == "Beach | Haii!! hello!!" then
+                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(276.95, 8.501, 240)
+                        task.wait(7)
+					end
+
+                elseif v.Name == "Beach" then
+                    if v.Garden.TaskText == "Beach | Do some stuff at the alcove" then
+                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(217.75, 8.501, 246.5)
+                        task.wait(7)
+					end
+
+                elseif v.Name == "Beach" then
+                    if v.Garden.TaskText == "Beach | Do some stuff at the alcove" then
+                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(217.75, 8.501, 246.5)
+                        task.wait(7)
+					end
+				end
+
+			
+
+
+			end
+		else
+			return
+		end
+	end
+end
+end
+--------- [ Main ] -----------
 local MainWindow = library:CreateWindow({
-    Name = " dingus | [ Version : 2.0 ]",
+    Name = " dingus | [ Version : 2.3 ]",
     Themeable = {
     Info = "Script Made By Noob"
     }
@@ -158,13 +233,16 @@ Esp:AddToggle({
 
 ----------- [ Hidder ] -----------
 local Hidder = GeneralTab:CreateSection({
-    Name = " Hidder "
+    Name = " Hider "
 })
 Hidder:AddToggle({
-    Name = "See All Game Task",
-    Flag = "For_New_PLayer",
+    Name = "Auto Task",
+    Flag = "Just_Need_Hold_E",
     Callback = function(v)
-        _G.hidderTasks = v
+        _G.autotask = v
+        if not _G.autotask then return end
+        repeat CheckTask() until plrtaskCheck.Garden == nil and plrtaskCheck.Store == nil or plrtaskCheck.Street == nil or plrtaskCheck.Beach == nil
+        warn("Task Done!")
 
     end
 })
