@@ -4,7 +4,7 @@ local waitingtimeafternotifi = NotifiTime + 1
 
 local noclip = false
 local AutoTask = false
-local MapNOW = ""
+
 
 ----------------------------------------
 local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
@@ -46,7 +46,7 @@ end
 
 
 -------// Main //-------
-Settings:Label("Map:"..MapNOW.."")
+
 MainSection:Toggle("Auto Task",false, function(t)
     AutoTask = t
     if not AutoTask then return end
@@ -271,12 +271,3 @@ Settings:Button("Copy kinx Lib Here", function()
     UILib:Notification("Notification", "Copied!", "Okay")
 end)
 Settings:Label("The Doc Of This lib is on the internet U can find them")
-while wait() do
-    for i,v in pairs(game:GetService("Workspace").LoadedMap:GetChildren()) do
-        if v.Name == "Bank" then
-            _G.Nowmap = "[ New Map ]"
-        elseif v.Name == "VendingSabotague" then
-            _G.Nowmap = "[ Clasical ]"
-        end
-    end
-end
