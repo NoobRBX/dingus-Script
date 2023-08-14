@@ -1,4 +1,4 @@
-local HubName = "dingus.nub {Ver: 2.1}"
+local HubName = "dingus.nub"
 local NotifiTime = 3
 local waitingtimeafternotifi = NotifiTime + 1
 
@@ -69,6 +69,7 @@ MainSection:Toggle("Instance Task [ALL]",false, function(t)
                 local ohNumber1 = i
             
                 game:GetService("ReplicatedStorage").Remotes.InvokeTaskCompleted:InvokeServer(ohNumber1)
+                wait(.001)
             end
             wait(.00001)
         end
