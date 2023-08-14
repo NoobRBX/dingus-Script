@@ -5,9 +5,7 @@ local waitingtimeafternotifi = NotifiTime + 1
 local noclip = false
 local AutoTask = false
 _G.Nowmap = ""
-if _G.Nowmap == "" then
-    _G.Nowmap = "In Load!"
-end
+
 ----------------------------------------
 local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
 local Notify = AkaliNotif.Notify;
