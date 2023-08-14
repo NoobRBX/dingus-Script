@@ -1,10 +1,10 @@
-local HubName = "dingus.nub [New Map] "
+local HubName = "dingus.nub {Ver: 2.1}"
 local NotifiTime = 3
 local waitingtimeafternotifi = NotifiTime + 1
 
 local noclip = false
 local AutoTask = false
-
+local Map = ""
 
 ----------------------------------------
 local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
@@ -18,6 +18,7 @@ Notify({
     Duration = NotifiTime;
 });
 task.wait(waitingtimeafternotifi)
+
 local win = UILib:Window(HubName,Color3.fromRGB(44, 120, 224), Enum.KeyCode.P)
 
 -------// Sections //-------
@@ -25,21 +26,31 @@ local MainSection = win:Tab("Main")
 local Visual = win:Tab("Visual")
 local Teleport = win:Tab("Teleport")
 local Settings = win:Tab("Settings")
+local Mics = win:Tab("Mics")
 -------// Map Checker //-------
 function MapChecker()
     for i,v in pairs(game:GetService("Workspace").LoadedMap:GetChildren()) do
         if v.Name == "Bank" then
-            Notify({
+        Map = "[ Wild West ]"
+        Notify({
                 Description = "Getting Task Data...!";
-                Title =  "Map Found: [ Wild West ]";
+                Title =  "Map Detector: [ Wild West ]";
                 Duration = NotifiTime;
             });
         elseif v.Name == "VendingSabotague" then
+        Map = "[ Clasical ]"
         Notify({
             Description = "Getting Task Data...!";
-            Title =  "Map Found: [ Clasical ]";
+            Title =  "Map Detector: [ Clasical ]";
             Duration = NotifiTime;
         });
+        end
+    end
+end
+function nillMap()
+    for i,v in pairs(game:GetService("Workspace").LoadedMap:GetChildren()) do
+        if v == nil then
+            return MapChecker()
         end
     end
 end
@@ -47,38 +58,55 @@ end
 
 -------// Main //-------
 
-MainSection:Toggle("Auto Task",false, function(t)
+MainSection:Toggle("Instance Task [ALL]",false, function(t)
     AutoTask = t
     if not AutoTask then return end
-    MapChecker()
-    task.wait(5)
+    if AutoTask then
+        while AutoTask do
+            MapChecker()
+            task.wait(5)
+            for i = 1,100 do
+                local ohNumber1 = i
+            
+                game:GetService("ReplicatedStorage").Remotes.InvokeTaskCompleted:InvokeServer(ohNumber1)
+            end
+            wait(.00001)
+        end
+      
+    end
+
 end)
-MainSection:Slider("WalkSpeed",0,1000,16, function(t)
+MainSection:Slider("WalkSpeed",16,1000,16, function(t)
 	game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = t
 end)
 
-MainSection:Slider("Jump Power",0,1000,50, function(t)
+MainSection:Slider("Jump Power",50,1000,50, function(t)
 	game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = t
 end)
 -------// Visual //-------
-
+local ESPEnabled = false
+local DistanceEnabled = true
+local TracersEnabled = true
 
 
 
 local blindremove = false
 function blindremovef()
     if blindremove then
-        while wait() do
+        while wait(1) do
             game:GetService("Players").LocalPlayer.PlayerGui.BlindnessGui.Frame.BackgroundTransparency = 1
-		    warn("Blindness Gui has been removed ,Clear View For Hunter")
+		    
         end
 		
     end
 end
+function ReturnColor(model)
+    if game:GetService("Players")[model.Name].Backpack:FindFirstChild("Knife") or game:GetService("Players")[model.Name]:FindFirstChild("Knife") then return Color3.fromRGB(255,0,0) end
+    if game:GetService("Players")[model.Name].Backpack:FindFirstChild("Gun") or game:GetService("Players")[model.Name].Backpack:FindFirstChild("Revolver") or game:GetService("Players")[model.Name]:FindFirstChild("Revolver") or game:GetService("Players")[model.Name]:FindFirstChild("Gun") then return Color3.fromRGB(0,0,255) end
+    return Color3.fromRGB(0, 255, 0)
+end
 function EspAdd()
-    local ESPEnabled = false
-    local DistanceEnabled = true
-    local TracersEnabled = true
+
     
     pcall(function()
         
@@ -185,7 +213,7 @@ function EspAdd()
 end
 
 
-Visual:Label("The ESP Not Work Sometimes! but just try if it work with you")
+Visual:Label("The ESP May Not Work Sometimes!")
 Visual:Toggle("ESP",false, function(t)
     ESPEnabled = t
     if not ESPEnabled then return end
@@ -202,8 +230,14 @@ end)
 Settings:Label("UI Toggle Key:  P")
 Settings:Label("This Script Make By Nub")
 Settings:Label("The Name Of The lib is kinx")
-Settings:Button("Copy kinx Lib Here", function()
+Settings:Button("Copy Kinx Lib Here", function()
     setclipboard("local UILib = loadstring(game:HttpGet('https://raw.githubusercontent.com/inceldom/kinx/main/ui'))()")
     UILib:Notification("Notification", "Copied!", "Okay")
 end)
 Settings:Label("The Doc Of This lib is on the internet U can find them")
+-------// Mics //-------
+Mics:Button("Rejoin Server", function()
+    local ts = game:GetService("TeleportService")
+    local p = game:GetService("Players").LocalPlayer
+    ts:Teleport(game.PlaceId, p)
+end)
