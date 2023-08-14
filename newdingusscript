@@ -31,7 +31,7 @@ function MapChecker()
         if v.Name == "Bank" then
             Notify({
                 Description = "Getting Task Data...!";
-                Title =  "Map Found: [ New Map ]";
+                Title =  "Map Found: [ Wild West ]";
                 Duration = NotifiTime;
             });
         elseif v.Name == "VendingSabotague" then
@@ -253,13 +253,13 @@ Visual:Label("The ESP Not Work Sometimes! but just try if it work with you")
 Visual:Toggle("ESP",false, function(t)
     ESPEnabled = t
     if not ESPEnabled then return end
-    blindremovef()
+    EspAdd()
 end)
 
 
 Visual:Toggle("Blind Remove",false, function(t)
     blindremove = t
-    blindremove()
+    blindremovef()
 end)
 -------// Teleport //-------
 -------// Settings //-------
