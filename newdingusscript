@@ -19,8 +19,9 @@ local win = UILib:Window(HubName,Color3.fromRGB(44, 120, 224), Enum.KeyCode.P)
 
 -------// Sections //-------
 local MainSection = win:Tab("Main")
-local Settings = win:Tab("Settings")
+local Visual = win:Tab("Visual")
 local Teleport = win:Tab("Teleport")
+local Settings = win:Tab("Settings")
 -------// Map Checker //-------
 
 -------// Main //-------
@@ -41,7 +42,7 @@ MainSection:Slider("Jump Power",0,1000,50, function(t)
 	game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = t
 end)
 -------// Visual //-------
-local Visual = win:Tab("Visual")
+
 
 local ESPEnabled = false
 local DistanceEnabled = true
@@ -58,142 +59,205 @@ function blindremove()
     end
 end
 function EspAdd()
--- Services
-local RunService = game:GetService("RunService");
-local PlayersService = game:GetService("Players");
+-- Made by Blissful#4992
+local Players = game:service("Players")
+local Player = Players.LocalPlayer
+local Mouse = Player:GetMouse()
+local Camera = game:service("Workspace").CurrentCamera
+local RS = game:service("RunService")
+local UIS = game:service("UserInputService")
 
--- Variables
-local Camera = workspace.CurrentCamera;
-local LastPos;
-local Lines = {};
-local Quads = {};
+repeat wait() until Player.Character ~= nil and Player.Character.PrimaryPart ~= nil
 
--- Functions
-local function HasCharacter(Player)
-    return Player.Character and Player.Character:FindFirstChild("HumanoidRootPart");
-end;
+local LerpColorModule = loadstring(game:HttpGet("https://pastebin.com/raw/wRnsJeid"))()
+local HealthBarLerp = LerpColorModule:Lerp(Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 255, 0))
 
-local function DrawQuad(PosA, PosB, PosC, PosD)
-    local PosAScreen, PosAVisible = Camera:WorldToViewportPoint(PosA);
-    local PosBScreen, PosBVisible = Camera:WorldToViewportPoint(PosB);
-    local PosCScreen, PosCVisible = Camera:WorldToViewportPoint(PosC);
-    local PosDScreen, PosDVisible = Camera:WorldToViewportPoint(PosD);
-
-    if (not PosAVisible and not PosBVisible and not PosCVisible and not PosDVisible) then return; end;
-
-    local PosAVec = Vector2.new(PosAScreen.X, PosAScreen.Y);
-    local PosBVec = Vector2.new(PosBScreen.X, PosBScreen.Y);
-    local PosCVec = Vector2.new(PosCScreen.X, PosCScreen.Y);
-    local PosDVec = Vector2.new(PosDScreen.X, PosDScreen.Y);
-
-    local Quad = Drawing.new("Quad");
-        Quad.Thickness = .5;
-        Quad.Color = Color3.fromRGB(255, 255, 255);
-        Quad.Transparency = .25;
-        Quad.ZIndex = 1;
-        Quad.Filled = true
-        Quad.Visible = true;
-
-        Quad.PointA = PosAVec;
-        Quad.PointB = PosBVec;
-        Quad.PointC = PosCVec;
-        Quad.PointD = PosDVec;
-
-    table.insert(Quads, Quad)
+local function NewCircle(Transparency, Color, Radius, Filled, Thickness)
+    local c = Drawing.new("Circle")
+    c.Transparency = Transparency
+    c.Color = Color
+    c.Visible = false
+    c.Thickness = Thickness
+    c.Position = Vector2.new(0, 0)
+    c.Radius = Radius
+    c.NumSides = math.clamp(Radius*55/100, 10, 75)
+    c.Filled = Filled
+    return c
 end
 
-local function DrawLine(From, To)
-    local FromScreen, FromVisible = Camera:WorldToViewportPoint(From);
-    local ToScreen, ToVisible = Camera:WorldToViewportPoint(To);
+local RadarInfo = {
+    Position = Vector2.new(200, 200),
+    Radius = 100,
+    Scale = 1, -- Determinant factor on the effect of the relative position for the 2D integration
+    RadarBack = Color3.fromRGB(10, 10, 10),
+    RadarBorder = Color3.fromRGB(75, 75, 75),
+    LocalPlayerDot = Color3.fromRGB(255, 255, 255),
+    PlayerDot = Color3.fromRGB(60, 170, 255),
+    Team = Color3.fromRGB(0, 255, 0),
+    Enemy = Color3.fromRGB(255, 0, 0),
+    Health_Color = true,
+    Team_Check = true
+}
 
-    if (not FromVisible and not ToVisible) then return; end;
+local RadarBackground = NewCircle(0.9, RadarInfo.RadarBack, RadarInfo.Radius, true, 1)
+RadarBackground.Visible = true
+RadarBackground.Position = RadarInfo.Position
 
-    local FromPos = Vector2.new(FromScreen.X, FromScreen.Y);
-    local ToPos = Vector2.new(ToScreen.X, ToScreen.Y);
+local RadarBorder = NewCircle(0.75, RadarInfo.RadarBorder, RadarInfo.Radius, false, 3)
+RadarBorder.Visible = true
+RadarBorder.Position = RadarInfo.Position
 
-    local Line = Drawing.new("Line");
-        Line.Thickness = 1;
-        Line.From = FromPos
-        Line.To = ToPos
-        Line.Color = Color3.fromRGB(255, 255, 255);
-        Line.Transparency = 1;
-        Line.ZIndex = 1;
-        Line.Visible = true;
-
-    table.insert(Lines, Line)
+local function GetRelative(pos)
+    local char = Player.Character
+    if char ~= nil and char.PrimaryPart ~= nil then
+        local pmpart = char.PrimaryPart
+        local camerapos = Vector3.new(Camera.CFrame.Position.X, pmpart.Position.Y, Camera.CFrame.Position.Z)
+        local newcf = CFrame.new(pmpart.Position, camerapos)
+        local r = newcf:PointToObjectSpace(pos)
+        return r.X, r.Z
+    else
+        return 0, 0
+    end
 end
 
--- Thank you Nahida#5000 for this function (GetCorners = GetVertices)
-local function GetCorners(Part)
-    local CF, Size, Corners = Part.CFrame, Part.Size / 2, {};
-    for X = -1, 1, 2 do for Y = -1, 1, 2 do for Z = -1, 1, 2 do
-        Corners[#Corners+1] = (CF * CFrame.new(Size * Vector3.new(X, Y, Z))).Position;      
-    end; end; end;
-    return Corners;
-end;
+local function PlaceDot(plr)
+    local PlayerDot = NewCircle(1, RadarInfo.PlayerDot, 3, true, 1)
 
-local function DrawEsp(Player)
-    local HRP = Player.Character.HumanoidRootPart;
+    local function Update()
+        local c 
+        c = game:service("RunService").RenderStepped:Connect(function()
+            local char = plr.Character
+            if char and char:FindFirstChildOfClass("Humanoid") and char.PrimaryPart ~= nil and char:FindFirstChildOfClass("Humanoid").Health > 0 then
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                local scale = RadarInfo.Scale
+                local relx, rely = GetRelative(char.PrimaryPart.Position)
+                local newpos = RadarInfo.Position - Vector2.new(relx * scale, rely * scale) 
+                
+                if (newpos - RadarInfo.Position).magnitude < RadarInfo.Radius-2 then 
+                    PlayerDot.Radius = 3   
+                    PlayerDot.Position = newpos
+                    PlayerDot.Visible = true
+                else 
+                    local dist = (RadarInfo.Position - newpos).magnitude
+                    local calc = (RadarInfo.Position - newpos).unit * (dist - RadarInfo.Radius)
+                    local inside = Vector2.new(newpos.X + calc.X, newpos.Y + calc.Y)
+                    PlayerDot.Radius = 2
+                    PlayerDot.Position = inside
+                    PlayerDot.Visible = true
+                end
 
-    -- Constructing the 3d box.
-    local CubeVertices = GetCorners({CFrame = HRP.CFrame * CFrame.new(0, -0.5, 0), Size = Vector3.new(3, 5, 3)});
+                PlayerDot.Color = RadarInfo.PlayerDot
+                if RadarInfo.Team_Check then
+                    if plr.TeamColor == Player.TeamColor then
+                        PlayerDot.Color = RadarInfo.Team
+                    else
+                        PlayerDot.Color = RadarInfo.Enemy
+                    end
+                end
 
-    -- Drawing the 3d box.
-        -- Bottom face:
-        DrawLine(CubeVertices[1], CubeVertices[2]);
-        DrawLine(CubeVertices[2], CubeVertices[6]);
-        DrawLine(CubeVertices[6], CubeVertices[5]);
-        DrawLine(CubeVertices[5], CubeVertices[1]);
+                if RadarInfo.Health_Color then
+                    PlayerDot.Color = HealthBarLerp(hum.Health / hum.MaxHealth)
+                end
+            else 
+                PlayerDot.Visible = false
+                if Players:FindFirstChild(plr.Name) == nil then
+                    PlayerDot:Remove()
+                    c:Disconnect()
+                end
+            end
+        end)
+    end
+    coroutine.wrap(Update)()
+end
 
-        DrawQuad(CubeVertices[1], CubeVertices[2], CubeVertices[6], CubeVertices[5]);
-       
-        -- Side faces:
-        DrawLine(CubeVertices[1], CubeVertices[3]);
-        DrawLine(CubeVertices[2], CubeVertices[4]);
-        DrawLine(CubeVertices[6], CubeVertices[8]);
-        DrawLine(CubeVertices[5], CubeVertices[7]);
+for _,v in pairs(Players:GetChildren()) do
+    if v.Name ~= Player.Name then
+        PlaceDot(v)
+    end
+end
 
-        DrawQuad(CubeVertices[2], CubeVertices[4], CubeVertices[8], CubeVertices[6]);
-        DrawQuad(CubeVertices[1], CubeVertices[2], CubeVertices[4], CubeVertices[3]);
-        DrawQuad(CubeVertices[1], CubeVertices[5], CubeVertices[7], CubeVertices[3]);
-        DrawQuad(CubeVertices[5], CubeVertices[7], CubeVertices[8], CubeVertices[6]);
+local function NewLocalDot()
+    local d = Drawing.new("Triangle")
+    d.Visible = true
+    d.Thickness = 1
+    d.Filled = true
+    d.Color = RadarInfo.LocalPlayerDot
+    d.PointA = RadarInfo.Position + Vector2.new(0, -6)
+    d.PointB = RadarInfo.Position + Vector2.new(-3, 6)
+    d.PointC = RadarInfo.Position + Vector2.new(3, 6)
+    return d
+end
 
-        -- Top face:
-        DrawLine(CubeVertices[3], CubeVertices[4]);
-        DrawLine(CubeVertices[4], CubeVertices[8]);
-        DrawLine(CubeVertices[8], CubeVertices[7]);
-        DrawLine(CubeVertices[7], CubeVertices[3]);
-       
-        DrawQuad(CubeVertices[3], CubeVertices[4], CubeVertices[8], CubeVertices[7]);
-end;
+local LocalPlayerDot = NewLocalDot()
 
-local function BoxEsp()
-    local Players = PlayersService:GetPlayers();
+Players.PlayerAdded:Connect(function(v)
+    if v.Name ~= Player.Name then
+        PlaceDot(v)
+    end
+    LocalPlayerDot:Remove()
+    LocalPlayerDot = NewLocalDot()
+end)
 
-    for i = 1, #Lines do
-        local Line = rawget(Lines, i);
-        if (Line) then Line:Remove(); end;
-    end;
+-- Loop
+coroutine.wrap(function()
+    local c 
+    c = game:service("RunService").RenderStepped:Connect(function()
+        if LocalPlayerDot ~= nil then
+            LocalPlayerDot.Color = RadarInfo.LocalPlayerDot
+            LocalPlayerDot.PointA = RadarInfo.Position + Vector2.new(0, -6)
+            LocalPlayerDot.PointB = RadarInfo.Position + Vector2.new(-3, 6)
+            LocalPlayerDot.PointC = RadarInfo.Position + Vector2.new(3, 6)
+        end
+        RadarBackground.Position = RadarInfo.Position
+        RadarBackground.Radius = RadarInfo.Radius
+        RadarBackground.Color = RadarInfo.RadarBack
 
-    Lines = {};
+        RadarBorder.Position = RadarInfo.Position
+        RadarBorder.Radius = RadarInfo.Radius
+        RadarBorder.Color = RadarInfo.RadarBorder
+    end)
+end)()
 
-    for i = 1, #Quads do
-        local Quad = rawget(Quads, i);
-        if (Quad) then Quad:Remove(); end;
-    end;
+-- Draggable
+local inset = game:service("GuiService"):GetGuiInset()
 
-    Quads = {};
+local dragging = false
+local offset = Vector2.new(0, 0)
+UIS.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and (Vector2.new(Mouse.X, Mouse.Y + inset.Y) - RadarInfo.Position).magnitude < RadarInfo.Radius then
+        offset = RadarInfo.Position - Vector2.new(Mouse.X, Mouse.Y)
+        dragging = true
+    end
+end)
 
-    for i = 1, #Players do
-        local Player = rawget(Players, i);
-        if HasCharacter(Player) then
-            DrawEsp(Player);
-        end;
-    end;
-end;
+UIS.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
 
--- Main
-RunService.RenderStepped:Connect(BoxEsp);
+coroutine.wrap(function()
+    local dot = NewCircle(1, Color3.fromRGB(255, 255, 255), 3, true, 1)
+    local c 
+    c = game:service("RunService").RenderStepped:Connect(function()
+        if (Vector2.new(Mouse.X, Mouse.Y + inset.Y) - RadarInfo.Position).magnitude < RadarInfo.Radius then
+            dot.Position = Vector2.new(Mouse.X, Mouse.Y + inset.Y)
+            dot.Visible = true
+        else 
+            dot.Visible = false
+        end
+        if dragging then
+            RadarInfo.Position = Vector2.new(Mouse.X, Mouse.Y) + offset
+        end
+    end)
+end)()
+
+--[[ Example:
+wait(3)
+RadarInfo.Position = Vector2.new(300, 300)
+RadarInfo.Radius = 150
+RadarInfo.RadarBack = Color3.fromRGB(50, 0, 0)
+]]
 end
 
 
