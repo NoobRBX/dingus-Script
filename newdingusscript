@@ -3,6 +3,11 @@ local NotifiTime = 3
 local waitingtimeafternotifi = NotifiTime + 1
 
 local noclip = false
+local AutoTask = false
+_G.Nowmap = ""
+if _G.Nowmap == "" then
+    _G.Nowmap = "In Load!"
+end
 ----------------------------------------
 local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
 local Notify = AkaliNotif.Notify;
@@ -23,16 +28,40 @@ local Visual = win:Tab("Visual")
 local Teleport = win:Tab("Teleport")
 local Settings = win:Tab("Settings")
 -------// Map Checker //-------
+function MapChecker()
+    for i,v in pairs(game:GetService("Workspace").LoadedMap:GetChildren()) do
+        if v.Name == "Bank" then
+            Notify({
+                Description = "Getting Task Data...!";
+                Title =  "Map Found: [ New Map ]";
+                Duration = NotifiTime;
+            });
+        elseif v.Name == "VendingSabotague" then
+        Notify({
+            Description = "Getting Task Data...!";
+            Title =  "Map Found: [ Clasical ]";
+            Duration = NotifiTime;
+        });
+        end
+    end
+end
+while wait() do
+    for i,v in pairs(game:GetService("Workspace").LoadedMap:GetChildren()) do
+        if v.Name == "Bank" then
+            _G.Nowmap = "[ New Map ]"
+        elseif v.Name == "VendingSabotague" then
+            _G.Nowmap = "[ Clasical ]"
+        end
+    end
+end
 
 -------// Main //-------
-
-MainSection:Toggle("Noclip",false, function(t)
-    noclip = t
-end)
-game:GetService("RunService").RenderStepped:Connect(function()
-    if noclip == true then
-        game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
-    end
+Settings:Label("Map:".._G.Nowmap.."")
+MainSection:Toggle("Auto Task",false, function(t)
+    AutoTask = t
+    if not AutoTask then return end
+    MapChecker()
+    task.wait(5)
 end)
 MainSection:Slider("WalkSpeed",0,1000,16, function(t)
 	game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = t
@@ -45,11 +74,9 @@ end)
 
 
 local ESPEnabled = false
-local DistanceEnabled = true
-local TracersEnabled = true
 
 local blindremove = false
-function blindremove()
+function blindremovef()
     if blindremove then
         while wait() do
             game:GetService("Players").LocalPlayer.PlayerGui.BlindnessGui.Frame.BackgroundTransparency = 1
@@ -59,218 +86,190 @@ function blindremove()
     end
 end
 function EspAdd()
--- Made by Blissful#4992
-local Players = game:service("Players")
-local Player = Players.LocalPlayer
-local Mouse = Player:GetMouse()
-local Camera = game:service("Workspace").CurrentCamera
-local RS = game:service("RunService")
-local UIS = game:service("UserInputService")
-
-repeat wait() until Player.Character ~= nil and Player.Character.PrimaryPart ~= nil
-
-local LerpColorModule = loadstring(game:HttpGet("https://pastebin.com/raw/wRnsJeid"))()
-local HealthBarLerp = LerpColorModule:Lerp(Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 255, 0))
-
-local function NewCircle(Transparency, Color, Radius, Filled, Thickness)
-    local c = Drawing.new("Circle")
-    c.Transparency = Transparency
-    c.Color = Color
-    c.Visible = false
-    c.Thickness = Thickness
-    c.Position = Vector2.new(0, 0)
-    c.Radius = Radius
-    c.NumSides = math.clamp(Radius*55/100, 10, 75)
-    c.Filled = Filled
-    return c
-end
-
-local RadarInfo = {
-    Position = Vector2.new(200, 200),
-    Radius = 100,
-    Scale = 1, -- Determinant factor on the effect of the relative position for the 2D integration
-    RadarBack = Color3.fromRGB(10, 10, 10),
-    RadarBorder = Color3.fromRGB(75, 75, 75),
-    LocalPlayerDot = Color3.fromRGB(255, 255, 255),
-    PlayerDot = Color3.fromRGB(60, 170, 255),
-    Team = Color3.fromRGB(0, 255, 0),
-    Enemy = Color3.fromRGB(255, 0, 0),
-    Health_Color = true,
-    Team_Check = true
+-- Settings
+local Settings = {
+    Box_Color = Color3.fromRGB(255, 0, 0),
+    Box_Thickness = 2,
+    Team_Check = false,
+    Team_Color = false,
+    Autothickness = true
 }
 
-local RadarBackground = NewCircle(0.9, RadarInfo.RadarBack, RadarInfo.Radius, true, 1)
-RadarBackground.Visible = true
-RadarBackground.Position = RadarInfo.Position
+--Locals
+local Space = game:GetService("Workspace")
+local Player = game:GetService("Players").LocalPlayer
+local Camera = Space.CurrentCamera
 
-local RadarBorder = NewCircle(0.75, RadarInfo.RadarBorder, RadarInfo.Radius, false, 3)
-RadarBorder.Visible = true
-RadarBorder.Position = RadarInfo.Position
+-- Locals
+local function NewLine(color, thickness)
+    local line = Drawing.new("Line")
+    line.Visible = false
+    line.From = Vector2.new(0, 0)
+    line.To = Vector2.new(0, 0)
+    line.Color = color
+    line.Thickness = thickness
+    line.Transparency = 1
+    return line
+end
 
-local function GetRelative(pos)
-    local char = Player.Character
-    if char ~= nil and char.PrimaryPart ~= nil then
-        local pmpart = char.PrimaryPart
-        local camerapos = Vector3.new(Camera.CFrame.Position.X, pmpart.Position.Y, Camera.CFrame.Position.Z)
-        local newcf = CFrame.new(pmpart.Position, camerapos)
-        local r = newcf:PointToObjectSpace(pos)
-        return r.X, r.Z
-    else
-        return 0, 0
+local function Vis(lib, state)
+    for i, v in pairs(lib) do
+        v.Visible = state
     end
 end
 
-local function PlaceDot(plr)
-    local PlayerDot = NewCircle(1, RadarInfo.PlayerDot, 3, true, 1)
+local function Colorize(lib, color)
+    for i, v in pairs(lib) do
+        v.Color = color
+    end
+end
 
-    local function Update()
+local Black = Color3.fromRGB(0, 0, 0)
+
+local function Rainbow(lib, delay)
+    for hue = 0, 1, 1/30 do
+        local color = Color3.fromHSV(hue, 0.6, 1)
+        Colorize(lib, color)
+        wait(delay)
+    end
+    Rainbow(lib)
+end
+--Main Draw Function
+local function Main(plr)
+    repeat wait() until plr.Character ~= nil and plr.Character:FindFirstChild("Humanoid") ~= nil
+    local R15
+    if plr.Character.Humanoid.RigType == Enum.HumanoidRigType.R15 then
+        R15 = true
+    else 
+        R15 = false
+    end
+    local Library = {
+        TL1 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
+        TL2 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
+
+        TR1 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
+        TR2 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
+
+        BL1 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
+        BL2 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
+
+        BR1 = NewLine(Settings.Box_Color, Settings.Box_Thickness),
+        BR2 = NewLine(Settings.Box_Color, Settings.Box_Thickness)
+    }
+    coroutine.wrap(Rainbow)(Library, 0.15)
+    local oripart = Instance.new("Part")
+    oripart.Parent = Space
+    oripart.Transparency = 1
+    oripart.CanCollide = false
+    oripart.Size = Vector3.new(1, 1, 1)
+    oripart.Position = Vector3.new(0, 0, 0)
+    --Updater Loop
+    local function Updater()
         local c 
-        c = game:service("RunService").RenderStepped:Connect(function()
-            local char = plr.Character
-            if char and char:FindFirstChildOfClass("Humanoid") and char.PrimaryPart ~= nil and char:FindFirstChildOfClass("Humanoid").Health > 0 then
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                local scale = RadarInfo.Scale
-                local relx, rely = GetRelative(char.PrimaryPart.Position)
-                local newpos = RadarInfo.Position - Vector2.new(relx * scale, rely * scale) 
-                
-                if (newpos - RadarInfo.Position).magnitude < RadarInfo.Radius-2 then 
-                    PlayerDot.Radius = 3   
-                    PlayerDot.Position = newpos
-                    PlayerDot.Visible = true
-                else 
-                    local dist = (RadarInfo.Position - newpos).magnitude
-                    local calc = (RadarInfo.Position - newpos).unit * (dist - RadarInfo.Radius)
-                    local inside = Vector2.new(newpos.X + calc.X, newpos.Y + calc.Y)
-                    PlayerDot.Radius = 2
-                    PlayerDot.Position = inside
-                    PlayerDot.Visible = true
-                end
+        c = game:GetService("RunService").RenderStepped:Connect(function()
+            if plr.Character ~= nil and plr.Character:FindFirstChild("Humanoid") ~= nil and plr.Character:FindFirstChild("HumanoidRootPart") ~= nil and plr.Character.Humanoid.Health > 0 and plr.Character:FindFirstChild("Head") ~= nil then
+                local Hum = plr.Character
+                local HumPos, vis = Camera:WorldToViewportPoint(Hum.HumanoidRootPart.Position)
+                if vis then
+                    oripart.Size = Vector3.new(Hum.HumanoidRootPart.Size.X, Hum.HumanoidRootPart.Size.Y*1.5, Hum.HumanoidRootPart.Size.Z)
+                    oripart.CFrame = CFrame.new(Hum.HumanoidRootPart.CFrame.Position, Camera.CFrame.Position)
+                    local SizeX = oripart.Size.X
+                    local SizeY = oripart.Size.Y
+                    local TL = Camera:WorldToViewportPoint((oripart.CFrame * CFrame.new(SizeX, SizeY, 0)).p)
+                    local TR = Camera:WorldToViewportPoint((oripart.CFrame * CFrame.new(-SizeX, SizeY, 0)).p)
+                    local BL = Camera:WorldToViewportPoint((oripart.CFrame * CFrame.new(SizeX, -SizeY, 0)).p)
+                    local BR = Camera:WorldToViewportPoint((oripart.CFrame * CFrame.new(-SizeX, -SizeY, 0)).p)
 
-                PlayerDot.Color = RadarInfo.PlayerDot
-                if RadarInfo.Team_Check then
-                    if plr.TeamColor == Player.TeamColor then
-                        PlayerDot.Color = RadarInfo.Team
-                    else
-                        PlayerDot.Color = RadarInfo.Enemy
+                    if Settings.Team_Check then
+                        if plr.TeamColor == Player.TeamColor then
+                            Colorize(Library, Color3.fromRGB(0, 255, 0))
+                        else 
+                            Colorize(Library, Color3.fromRGB(255, 0, 0))
+                        end
                     end
-                end
 
-                if RadarInfo.Health_Color then
-                    PlayerDot.Color = HealthBarLerp(hum.Health / hum.MaxHealth)
+                    if Settings.Team_Color then
+                        Colorize(Library, plr.TeamColor.Color)
+                    end
+
+                    local ratio = (Camera.CFrame.p - Hum.HumanoidRootPart.Position).magnitude
+                    local offset = math.clamp(1/ratio*750, 2, 300)
+
+                    Library.TL1.From = Vector2.new(TL.X, TL.Y)
+                    Library.TL1.To = Vector2.new(TL.X + offset, TL.Y)
+                    Library.TL2.From = Vector2.new(TL.X, TL.Y)
+                    Library.TL2.To = Vector2.new(TL.X, TL.Y + offset)
+
+                    Library.TR1.From = Vector2.new(TR.X, TR.Y)
+                    Library.TR1.To = Vector2.new(TR.X - offset, TR.Y)
+                    Library.TR2.From = Vector2.new(TR.X, TR.Y)
+                    Library.TR2.To = Vector2.new(TR.X, TR.Y + offset)
+
+                    Library.BL1.From = Vector2.new(BL.X, BL.Y)
+                    Library.BL1.To = Vector2.new(BL.X + offset, BL.Y)
+                    Library.BL2.From = Vector2.new(BL.X, BL.Y)
+                    Library.BL2.To = Vector2.new(BL.X, BL.Y - offset)
+
+                    Library.BR1.From = Vector2.new(BR.X, BR.Y)
+                    Library.BR1.To = Vector2.new(BR.X - offset, BR.Y)
+                    Library.BR2.From = Vector2.new(BR.X, BR.Y)
+                    Library.BR2.To = Vector2.new(BR.X, BR.Y - offset)
+
+                    Vis(Library, true)
+
+                    if Settings.Autothickness then
+                        local distance = (Player.Character.HumanoidRootPart.Position - oripart.Position).magnitude
+                        local value = math.clamp(1/distance*100, 1, 4) --0.1 is min thickness, 6 is max
+                        for u, x in pairs(Library) do
+                            x.Thickness = value
+                        end
+                    else 
+                        for u, x in pairs(Library) do
+                            x.Thickness = Settings.Box_Thickness
+                        end
+                    end
+                else 
+                    Vis(Library, false)
                 end
             else 
-                PlayerDot.Visible = false
-                if Players:FindFirstChild(plr.Name) == nil then
-                    PlayerDot:Remove()
+                Vis(Library, false)
+                if game:GetService("Players"):FindFirstChild(plr.Name) == nil then
+                    for i, v in pairs(Library) do
+                        v:Remove()
+                        oripart:Destroy()
+                    end
                     c:Disconnect()
                 end
             end
         end)
     end
-    coroutine.wrap(Update)()
+    coroutine.wrap(Updater)()
 end
 
-for _,v in pairs(Players:GetChildren()) do
+-- Draw Boxes
+for i, v in pairs(game:GetService("Players"):GetPlayers()) do
     if v.Name ~= Player.Name then
-        PlaceDot(v)
+      coroutine.wrap(Main)(v)
     end
 end
 
-local function NewLocalDot()
-    local d = Drawing.new("Triangle")
-    d.Visible = true
-    d.Thickness = 1
-    d.Filled = true
-    d.Color = RadarInfo.LocalPlayerDot
-    d.PointA = RadarInfo.Position + Vector2.new(0, -6)
-    d.PointB = RadarInfo.Position + Vector2.new(-3, 6)
-    d.PointC = RadarInfo.Position + Vector2.new(3, 6)
-    return d
-end
-
-local LocalPlayerDot = NewLocalDot()
-
-Players.PlayerAdded:Connect(function(v)
-    if v.Name ~= Player.Name then
-        PlaceDot(v)
-    end
-    LocalPlayerDot:Remove()
-    LocalPlayerDot = NewLocalDot()
+game:GetService("Players").PlayerAdded:Connect(function(newplr)
+    coroutine.wrap(Main)(newplr)
 end)
-
--- Loop
-coroutine.wrap(function()
-    local c 
-    c = game:service("RunService").RenderStepped:Connect(function()
-        if LocalPlayerDot ~= nil then
-            LocalPlayerDot.Color = RadarInfo.LocalPlayerDot
-            LocalPlayerDot.PointA = RadarInfo.Position + Vector2.new(0, -6)
-            LocalPlayerDot.PointB = RadarInfo.Position + Vector2.new(-3, 6)
-            LocalPlayerDot.PointC = RadarInfo.Position + Vector2.new(3, 6)
-        end
-        RadarBackground.Position = RadarInfo.Position
-        RadarBackground.Radius = RadarInfo.Radius
-        RadarBackground.Color = RadarInfo.RadarBack
-
-        RadarBorder.Position = RadarInfo.Position
-        RadarBorder.Radius = RadarInfo.Radius
-        RadarBorder.Color = RadarInfo.RadarBorder
-    end)
-end)()
-
--- Draggable
-local inset = game:service("GuiService"):GetGuiInset()
-
-local dragging = false
-local offset = Vector2.new(0, 0)
-UIS.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 and (Vector2.new(Mouse.X, Mouse.Y + inset.Y) - RadarInfo.Position).magnitude < RadarInfo.Radius then
-        offset = RadarInfo.Position - Vector2.new(Mouse.X, Mouse.Y)
-        dragging = true
-    end
-end)
-
-UIS.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
-end)
-
-coroutine.wrap(function()
-    local dot = NewCircle(1, Color3.fromRGB(255, 255, 255), 3, true, 1)
-    local c 
-    c = game:service("RunService").RenderStepped:Connect(function()
-        if (Vector2.new(Mouse.X, Mouse.Y + inset.Y) - RadarInfo.Position).magnitude < RadarInfo.Radius then
-            dot.Position = Vector2.new(Mouse.X, Mouse.Y + inset.Y)
-            dot.Visible = true
-        else 
-            dot.Visible = false
-        end
-        if dragging then
-            RadarInfo.Position = Vector2.new(Mouse.X, Mouse.Y) + offset
-        end
-    end)
-end)()
-
---[[ Example:
-wait(3)
-RadarInfo.Position = Vector2.new(300, 300)
-RadarInfo.Radius = 150
-RadarInfo.RadarBack = Color3.fromRGB(50, 0, 0)
-]]
 end
 
 
-
+Visual:Label("The ESP Not Work Sometimes! but just try if it work with you")
 Visual:Toggle("ESP",false, function(t)
     ESPEnabled = t
     if not ESPEnabled then return end
-    EspAdd()
+    blindremovef()
 end)
 
 
 Visual:Toggle("Blind Remove",false, function(t)
     blindremove = t
+    blindremove()
 end)
 -------// Teleport //-------
 -------// Settings //-------
