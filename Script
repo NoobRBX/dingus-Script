@@ -1,444 +1,209 @@
+local HubName = "dingus.nub [New Map] "
+local NotifiTime = 3
+local waitingtimeafternotifi = NotifiTime + 1
 
-local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
-local Wait = library.subs.Wait 
---------- [ Bloodlen ] -----------
-_G.esp = true
-_G.removeblind = true
-_G.hidderTasks = true
-_G.autotask = true
---------- [ Function ] -----------
-local plrtaskCheck = game:GetService("Players").LocalPlayer.PlayerGui.TaskUI.Body
-function CheckTask()
-	local PlrTask = game:GetService("Players").LocalPlayer.PlayerGui.TaskUI.Body:GetChildren()
-
-	for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.TaskUI.Body:GetChildren())  do
-		if v:IsA("Frame") then
-			if v.Name == "Garden" or v.Name == "Store" or v.Name == "Street" or v.Name == "Beach" then
-				if v.Name == "Garden" then
-					if v.Garden.TaskText == "Garden | Skrunkly" then
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(331.148, 12.251, 337.631)
-						task.wait(7)
-					end
-
-				elseif v.Name == "Garden" then
-					if v.Garden.TaskText == "Garden | Goobly" then
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(306.038, 12.251, 364.407)
-						task.wait(7)
-					end
-
-				elseif v.Name == "Rock" then
-					if v.Garden.TaskText == "Rock | Wave at tha gooberro" then
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(306.038, 12.251, 364.407)
-						task.wait(7)
-					end
-
-				elseif v.Name == "Rock" then
-					if v.Garden.TaskText == "Rock | Celebratory! yippeee" then
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(196.923, 21.501, 254.493)
-						task.wait(7)
-					end
-
-				elseif v.Name == "Beach" then
-					if v.Garden.TaskText == "Beach | Do some stuff at the alcove" then
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(217.75, 8.501, 246.5)
-						task.wait(7)
-					end
-
-				elseif v.Name == "Beach" then
-					if v.Garden.TaskText == "Beach | Relaxin' (the other one)" then
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(242.75, 8.751, 241)	
-						task.wait(7)				
-					end
-
-				elseif v.Name == "Beach" then
-					if v.Garden.TaskText == "Beach | Haii!! hello!!" then
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(276.95, 8.501, 240)
-						task.wait(7)
-					end
-
-				elseif v.Name == "Beach" then
-					if v.Garden.TaskText == "Beach | Do some stuff at the alcove" then
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(217.75, 8.501, 246.5)
-						task.wait(7)
-					end
-
-				elseif v.Name == "Beach" then
-					if v.Garden.TaskText == "Beach | Do some stuff at the alcove" then
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(217.75, 8.501, 246.5)
-						task.wait(7)
-					end
-				end
+local noclip = false
+local AutoTask = false
 
 
+----------------------------------------
+local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
+local Notify = AkaliNotif.Notify;
 
+local UILib = loadstring(game:HttpGet('https://raw.githubusercontent.com/inceldom/kinx/main/ui'))()
 
-			end
-		else
-			return wait(3)
-		end
-	end
-    task.wait(7)
-    warn("doing next task")
+Notify({
+    Description = "Please Don't Leave The Game Or Run The Script Many Times";
+    Title =  ""..HubName.." Now Loading!";
+    Duration = NotifiTime;
+});
+task.wait(waitingtimeafternotifi)
+local win = UILib:Window(HubName,Color3.fromRGB(44, 120, 224), Enum.KeyCode.P)
+
+-------// Sections //-------
+local MainSection = win:Tab("Main")
+local Visual = win:Tab("Visual")
+local Teleport = win:Tab("Teleport")
+local Settings = win:Tab("Settings")
+-------// Map Checker //-------
+function MapChecker()
+    for i,v in pairs(game:GetService("Workspace").LoadedMap:GetChildren()) do
+        if v.Name == "Bank" then
+            Notify({
+                Description = "Getting Task Data...!";
+                Title =  "Map Found: [ Wild West ]";
+                Duration = NotifiTime;
+            });
+        elseif v.Name == "VendingSabotague" then
+        Notify({
+            Description = "Getting Task Data...!";
+            Title =  "Map Found: [ Clasical ]";
+            Duration = NotifiTime;
+        });
+        end
+    end
 end
 
---------- [ Main ] -----------
-local MainWindow = library:CreateWindow({
-	Name = " dingus | [ Version : 2.3 ]",
-	Themeable = {
-		Info = "Script Made By Noob"
-	}
-})
-local GeneralTab = MainWindow:CreateTab({
-	Name = "General"
-})
-local Mics = MainWindow:CreateTab({
-	Name = "Mics"
-})
------------ [ ESP ] -----------
-local Esp = GeneralTab:CreateSection({
-	Name = " Hunter "
-})
-Esp:AddToggle({
-	Name = "See Hider",
-	Flag = "As The Hunter This Useful",
-	Callback = function(value)
-		local Players = game:GetService("Players"):GetChildren()
-		local RunService = game:GetService("RunService")
-		local highlight = Instance.new("Highlight")
-		highlight.Name = "Highlight"
-		_G.esp = value
-		if _G.esp == false then 
-			for i, v in pairs(Players) do
-				repeat wait() until v.Character
-				if v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-					v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight"):Destroy()
-				end
-			end
-		else
-			while _G.esp == true do
-				wait()
-				for i, v in pairs(Players) do
-					repeat wait() until v.Character
-					if not v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-						local highlightClone = highlight:Clone()
-						highlightClone.Adornee = v.Character
-						highlightClone.Parent = v.Character:FindFirstChild("HumanoidRootPart")
-						highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-						highlightClone.Name = "Highlight"
-					end
-				end
 
-				game.Players.PlayerAdded:Connect(function(player)
-					repeat wait() until player.Character
-					if not player.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-						local highlightClone = highlight:Clone()
-						highlightClone.Adornee = player.Character
-						highlightClone.Parent = player.Character:FindFirstChild("HumanoidRootPart")
-						highlightClone.Name = "Highlight"
-					end
-				end)
+-------// Main //-------
 
-				game.Players.PlayerRemoving:Connect(function(playerRemoved)
-					playerRemoved.Character:FindFirstChild("HumanoidRootPart").Highlight:Destroy()
-				end)
+MainSection:Toggle("Auto Task",false, function(t)
+    AutoTask = t
+    if not AutoTask then return end
+    MapChecker()
+    task.wait(5)
+end)
+MainSection:Slider("WalkSpeed",0,1000,16, function(t)
+	game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = t
+end)
 
-				RunService.Heartbeat:Connect(function()
-					for i, v in pairs(Players) do
-						repeat wait() until v.Character
-						if not v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-							local highlightClone = highlight:Clone()
-							highlightClone.Adornee = v.Character
-							highlightClone.Parent = v.Character:FindFirstChild("HumanoidRootPart")
-							highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-							highlightClone.Name = "Highlight"
-							task.wait()
-						end
-					end
-				end)
-			end
-
-		end
+MainSection:Slider("Jump Power",0,1000,50, function(t)
+	game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = t
+end)
+-------// Visual //-------
 
 
 
 
-	end
-})
-
-Esp:AddButton({
-	Name = "Fix Esp",
-	Callback = function()
-		while true do
-			wait()
-			local Players = game:GetService("Players"):GetChildren()
-			local highlight = Instance.new("Highlight")
-			for i, v in pairs(Players) do
-				repeat wait() until v.Character
-				if not v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-					local highlightClone = highlight:Clone()
-					highlightClone.Adornee = v.Character
-					highlightClone.Parent = v.Character:FindFirstChild("HumanoidRootPart")
-					highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-					highlightClone.Name = "Highlight"
-				end
-			end
-
-			game.Players.PlayerAdded:Connect(function(player)
-				repeat wait() until player.Character
-				if not player.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-					local highlightClone = highlight:Clone()
-					highlightClone.Adornee = player.Character
-					highlightClone.Parent = player.Character:FindFirstChild("HumanoidRootPart")
-					highlightClone.Name = "Highlight"
-				end
-			end)
-
-			game.Players.PlayerRemoving:Connect(function(playerRemoved)
-				playerRemoved.Character:FindFirstChild("HumanoidRootPart").Highlight:Destroy()
-			end)
-
-			RunService.Heartbeat:Connect(function()
-				for i, v in pairs(Players) do
-					repeat wait() until v.Character
-					if not v.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-						local highlightClone = highlight:Clone()
-						highlightClone.Adornee = v.Character
-						highlightClone.Parent = v.Character:FindFirstChild("HumanoidRootPart")
-						highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-						highlightClone.Name = "Highlight"
-						task.wait()
-					end
-				end
-			end)
-		end
-
-	end
-
-
-
-
-
-})
-
-Esp:AddToggle({
-	Name = "Remove Blind",
-	Flag = "As The Hunter This Useful",
-	Callback = function(v)
-		_G.removeblind = v
-
-		while _G.removeblind == true do
-			wait()
-			game:GetService("Players").LocalPlayer.PlayerGui.BlindnessGui.Frame.BackgroundTransparency = 1
-			warn("Blindness Gui has been removed ,Clear View For Hunter")
-		end
-
-	end
-})
-
------------ [ Hidder ] -----------
-local Hidder = GeneralTab:CreateSection({
-	Name = " Hider "
-})
-Hidder:AddToggle({
-	Name = "Auto Task",
-	Flag = "Just_Need_Hold_E",
-	Callback = function(v)
-		_G.autotask = v
-		if not _G.autotask then return end
-		repeat CheckTask() until plrtaskCheck.Garden == nil and plrtaskCheck.Store == nil or plrtaskCheck.Street == nil or plrtaskCheck.Beach == nil
-		warn("Task Done!")
-
-	end
-})
------------ [ Player ] -----------
-local localplayerSec = GeneralTab:CreateSection({
-	Name = "Player"
-
-
-})
-localplayerSec:AddSlider({
-	Name = "PLayer Speed",
-	Flag = "Speed",
-	Value = 16,
-	Min = 16,
-	Max = 200,
-	Callback = function(Value)
-		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
-	end
-})
------------ [ Teleport ] -----------
-local TeleSec = GeneralTab:CreateSection({
-	Name = "Teleport",
-	Side = "Right"
-})
-TeleSec:AddButton({
-	Name = "Rock:|Wave at tha gooberro|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(207.75, 19.499, 202.5)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Rock:|Celebratory! yippeee|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(196.923, 21.501, 254.493)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Beach:|Do some stuff at the alcove|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(217.75, 8.501, 246.5)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Beach:|Relaxin' (the other one)|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(242.75, 8.751, 241)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Beach:|Haii!! hello!!|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(276.95, 8.501, 240)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Beach:|Laugh at this goober|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(298.45, 8.501, 251.9)
-	end
-})
-TeleSec:AddButton({
-	Name = "Beach:|Relaxin'|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(324.25, 8.75, 248.5)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Beach:|Wave on the dock|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(319.823, 10.276, 191.677)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Street:|Dancin!!!!|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(207.75, 19.499, 202.5)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Street:|Something idk|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(341.554, 12.501, 283.933)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Garden:|Skrunkly|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(331.148, 12.251, 337.631)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Garden:|Goobly|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(306.038, 12.251, 364.407)
-	end
-})
-TeleSec:AddButton({
-	Name = "Outside Store",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(246.06, 13, 323.86)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Store:|Browse the shelves|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(235, 12.501, 342.25)
-	end
-})
-TeleSec:AddButton({
-	Name = "Store:|Look into a fridge|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(237, 12.501, 365.75)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Store:|idk scream at the cashier|Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(203.75, 12.501, 335.75)
-	end
-})
-TeleSec:AddButton({
-	Name = "Street:|Destroy the street light|Red Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(244.75, 12.5, 273.5)
-	end
-})
-
-TeleSec:AddButton({
-	Name = "Garden:|Hack the billboard|Red Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(330.75, 12.25, 363.5)
-	end
-})
-TeleSec:AddButton({
-	Name = "Store:|Break the vending machine|Red Task",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(246.75, 12.501, 347.75)
-	end
-})
-
-local TeleMicsSec = GeneralTab:CreateSection({
-	Name = "Mics Teleport"
-})
-TeleMicsSec:AddButton({
-	Name = "Hidden Place",
-	Callback = function()
-
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(237.336, 5.264, 366.773)
-	end
-})
+local blindremove = false
+function blindremovef()
+    if blindremove then
+        while wait() do
+            game:GetService("Players").LocalPlayer.PlayerGui.BlindnessGui.Frame.BackgroundTransparency = 1
+		    warn("Blindness Gui has been removed ,Clear View For Hunter")
+        end
+		
+    end
+end
+function EspAdd()
+    local ESPEnabled = false
+    local DistanceEnabled = true
+    local TracersEnabled = true
+    
+    pcall(function()
+        
+        Camera = game:GetService("Workspace").CurrentCamera
+        RunService = game:GetService("RunService")
+        camera = workspace.CurrentCamera
+        Bottom = Vector2.new(camera.ViewportSize.X/2, camera.ViewportSize.Y)
+    
+        function GetPoint(vector3)
+            local vector, onScreen = camera:WorldToScreenPoint(vector3)
+            return {Vector2.new(vector.X,vector.Y),onScreen,vector.Z}
+        end
+        
+        function MakeESP(model)
+            local CurrentParent = model.Parent
+        
+            local TopL = Drawing.new("Line")
+            local BottomL = Drawing.new("Line")
+            local LeftL = Drawing.new("Line")
+            local RightL = Drawing.new("Line")
+            local Tracer = Drawing.new("Line")
+            local Display = Drawing.new("Text")
+    
+            coroutine.resume(coroutine.create(function()
+                while model.Parent == CurrentParent and model.Humanoid.Health > 0 do
+                    
+                    local Distance = (Camera.CFrame.Position - model.HumanoidRootPart.Position).Magnitude
+                    local GetP = GetPoint(model.Head.Position)
+                    local headps = model.Head.CFrame
+                    
+                    if ESPEnabled and GetP[2] then
+                        
+                        -- Calculate Cords
+                        local topright = headps * CFrame.new(3,0.5, 0)
+                        local topleft = headps * CFrame.new(-3,0.5, 0)
+                        local bottomleft = headps * CFrame.new(-3,-7,0)
+                        local bottomright = headps * CFrame.new(3,-7,0)
+                        topright = GetPoint(topright.p)[1]
+                        topleft = GetPoint(topleft.p)[1]
+                        bottomleft = GetPoint(bottomleft.p)[1]
+                        bottomright = GetPoint(bottomright.p)[1]
+    
+                        teamcolor = ReturnColor(model)
+                        TopL.Color, BottomL.Color, RightL.Color, LeftL.Color = teamcolor, teamcolor, teamcolor, teamcolor
+                        TopL.From, BottomL.From, RightL.From, LeftL.From = topleft, bottomleft, topright, topleft
+                        TopL.To, BottomL.To, RightL.To, LeftL.To = topright, bottomright, bottomright, bottomleft
+                        TopL.Visible, BottomL.Visible, RightL.Visible, LeftL.Visible = true, true, true, true
+                    else
+                        TopL.Visible, BottomL.Visible, RightL.Visible, LeftL.Visible = false, false, false, false
+                    end
+                    
+                    if ESPEnabled and TracersEnabled and GetP[2] then
+                        Tracer.Color = ReturnColor(model)
+                        Tracer.From = Bottom
+                        Tracer.To = GetPoint(headps.p)[1]
+                        Tracer.Thickness = 1.5
+                        Tracer.Visible = true
+                    else
+                        Tracer.Visible = false
+                    end
+                    
+                    if ESPEnabled and DistanceEnabled and GetP[2] then
+                        Display.Visible = true
+                        Display.Position = GetPoint(headps.p + Vector3.new(0,0.5,0))[1]
+                        Display.Center = true
+                        Display.Text = tostring(math.floor(Distance)).." studs"
+                    else
+                        Display.Visible = false
+                    end
+                    
+                    RunService.RenderStepped:Wait()
+                end
+        
+                TopL:Remove()
+                BottomL:Remove()
+                RightL:Remove()
+                LeftL:Remove()
+                Tracer:Remove()
+                Display:Remove()
+            
+            end))
+        end
+        
+        for _, Player in next, game:GetService("Players"):GetChildren() do
+            if Player.Name ~= game.Players.LocalPlayer.Name then
+                MakeESP(Player.Character)
+                Player.CharacterAdded:Connect(function()
+                    delay(0.5, function()
+                        MakeESP(Player.Character)
+                    end)
+                end)
+            end	
+        end
+        
+        game:GetService("Players").PlayerAdded:Connect(function(player)
+            player.CharacterAdded:Connect(function()
+                delay(0.5, function()
+                    MakeESP(player.Character)
+                end)
+            end)
+        end)
+        
+    end)
+end
 
 
-local MiscSec = Mics:CreateSection({
-	Name = " Misc "
-})
+Visual:Label("The ESP Not Work Sometimes! but just try if it work with you")
+Visual:Toggle("ESP",false, function(t)
+    ESPEnabled = t
+    if not ESPEnabled then return end
+    EspAdd()
+end)
 
-MiscSec:AddButton({
-	Name = " Rejoin Server ",
-	Callback = function()
-		local ts = game:GetService("TeleportService")
-		local p = game:GetService("Players").LocalPlayer
-		ts:Teleport(game.PlaceId, p)
-	end
-})
+
+Visual:Toggle("Blind Remove",false, function(t)
+    blindremove = t
+    blindremovef()
+end)
+-------// Teleport //-------
+-------// Settings //-------
+Settings:Label("UI Toggle Key:  P")
+Settings:Label("This Script Make By Nub")
+Settings:Label("The Name Of The lib is kinx")
+Settings:Button("Copy kinx Lib Here", function()
+    setclipboard("local UILib = loadstring(game:HttpGet('https://raw.githubusercontent.com/inceldom/kinx/main/ui'))()")
+    UILib:Notification("Notification", "Copied!", "Okay")
+end)
+Settings:Label("The Doc Of This lib is on the internet U can find them")
