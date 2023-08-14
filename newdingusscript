@@ -25,6 +25,7 @@ local MainSection = win:Tab("Main")
 local Visual = win:Tab("Visual")
 local Teleport = win:Tab("Teleport")
 local Settings = win:Tab("Settings")
+local Mics = win:Tab("Mics")
 -------// Map Checker //-------
 function MapChecker()
     for i,v in pairs(game:GetService("Workspace").LoadedMap:GetChildren()) do
@@ -202,8 +203,14 @@ end)
 Settings:Label("UI Toggle Key:  P")
 Settings:Label("This Script Make By Nub")
 Settings:Label("The Name Of The lib is kinx")
-Settings:Button("Copy kinx Lib Here", function()
+Settings:Button("Copy Kinx Lib Here", function()
     setclipboard("local UILib = loadstring(game:HttpGet('https://raw.githubusercontent.com/inceldom/kinx/main/ui'))()")
     UILib:Notification("Notification", "Copied!", "Okay")
 end)
 Settings:Label("The Doc Of This lib is on the internet U can find them")
+-------// Mics //-------
+Mics:Button("Rejoin Server", function()
+    local ts = game:GetService("TeleportService")
+    local p = game:GetService("Players").LocalPlayer
+    ts:Teleport(game.PlaceId, p)
+end)
