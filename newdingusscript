@@ -43,15 +43,7 @@ function MapChecker()
         end
     end
 end
-while wait() do
-    for i,v in pairs(game:GetService("Workspace").LoadedMap:GetChildren()) do
-        if v.Name == "Bank" then
-            _G.Nowmap = "[ New Map ]"
-        elseif v.Name == "VendingSabotague" then
-            _G.Nowmap = "[ Clasical ]"
-        end
-    end
-end
+
 
 -------// Main //-------
 Settings:Label("Map:".._G.Nowmap.."")
@@ -279,3 +271,12 @@ Settings:Button("Copy kinx Lib Here", function()
     UILib:Notification("Notification", "Copied!", "Okay")
 end)
 Settings:Label("The Doc Of This lib is on the internet U can find them")
+while wait() do
+    for i,v in pairs(game:GetService("Workspace").LoadedMap:GetChildren()) do
+        if v.Name == "Bank" then
+            _G.Nowmap = "[ New Map ]"
+        elseif v.Name == "VendingSabotague" then
+            _G.Nowmap = "[ Clasical ]"
+        end
+    end
+end
