@@ -4,7 +4,7 @@ local waitingtimeafternotifi = NotifiTime + 1
 
 local noclip = false
 local AutoTask = false
-local Map = ""
+local Map = "Loading..."
 
 ----------------------------------------
 local AkaliNotif = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/Dynissimo/main/Scripts/AkaliNotif.lua"))();
@@ -25,6 +25,7 @@ local win = UILib:Window(HubName,Color3.fromRGB(44, 120, 224), Enum.KeyCode.P)
 local MainSection = win:Tab("Main")
 local Visual = win:Tab("Visual")
 local Teleport = win:Tab("Teleport")
+--local Funs = win:Tab("Funs")
 local Settings = win:Tab("Settings")
 local Mics = win:Tab("Mics")
 -------// Map Checker //-------
@@ -57,7 +58,8 @@ end
 
 
 -------// Main //-------
-
+local deleteCivi = false
+Settings:Label("Map:" ..Map.."")
 MainSection:Toggle("Instance Task [ALL]",false, function(t)
     AutoTask = t
     if not AutoTask then return end
@@ -76,6 +78,15 @@ MainSection:Toggle("Instance Task [ALL]",false, function(t)
       
     end
 
+end)
+MainSection:Toggle("Delete Civilian [Not Working]",false, function(t)
+    deleteCivi = t
+    if not deleteCivi then return end
+    for i,v in pairs(game:GetService("Workspace"):GetChildren()) do
+        v:FindFirstChild("Civilian"):Destroy()
+
+        wait()
+    end
 end)
 MainSection:Slider("WalkSpeed",16,1000,16, function(t)
 	game:GetService("Players").LocalPlayer.Character.Humanoid.WalkSpeed = t
@@ -214,28 +225,37 @@ function EspAdd()
 end
 
 
-Visual:Label("The ESP May Not Work Sometimes!")
+Visual:Label("The ESP May Not Work Sometimes! Or Not On The Player")
 Visual:Toggle("ESP",false, function(t)
     ESPEnabled = t
     if not ESPEnabled then return end
     EspAdd()
 end)
+Visual:Toggle("Tracers",true, function(t)
+    TracersEnabled = t
+    if not TRacersEnabled then return end
+end)
+
+
+Visual:Toggle("Distance Display",false, function(t)
+    DistanceEnabled = t
+    if not DistanceEnabled then return end
+end)
 
 
 Visual:Toggle("Blind Remove",false, function(t)
     blindremove = t
+    if not blindremove then return end
     blindremovef()
 end)
 -------// Teleport //-------
+-------// Funs //-------
+
+
 -------// Settings //-------
 Settings:Label("UI Toggle Key:  P")
 Settings:Label("This Script Make By Nub")
-Settings:Label("The Name Of The lib is kinx")
-Settings:Button("Copy Kinx Lib Here", function()
-    setclipboard("local UILib = loadstring(game:HttpGet('https://raw.githubusercontent.com/inceldom/kinx/main/ui'))()")
-    UILib:Notification("Notification", "Copied!", "Okay")
-end)
-Settings:Label("The Doc Of This lib is on the internet U can find them")
+Settings:Label("Script Version : [ 2.2 ] Lasted Version")
 -------// Mics //-------
 Mics:Button("Rejoin Server", function()
     local ts = game:GetService("TeleportService")
