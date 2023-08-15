@@ -1,6 +1,6 @@
 local HubName = "dingus.nub"
 local NotifiTime = 3
-local waitingtimeafternotifi = NotifiTime + 1
+local waitingtimeafternotifi = NotifiTime - 1
 
 local noclip = false
 local AutoTask = false
